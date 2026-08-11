@@ -26,18 +26,17 @@ def load_cloud_assets():
     # 直接讀取我們剛才打包好的 .pkl 檔案
     model = joblib.load('models/best_model.pkl')
     X_val = joblib.load('models/X_val_sample.pkl')
-    return model, X_val
+    y_val = joblib.load('models/y_val_sample.pkl')
+    return model, X_val, y_val
 
 
 with st.spinner("系統正在載入模型與驗證集數據，請稍候..."):
-    model, X_val = load_cloud_assets()
+    model, X_val, y_val = load_cloud_assets()
 
     # 針對輕量驗證集樣本產生預測值，供後續 ROC、PSI、SHAP 分頁使用
     val_preds = model.predict(X_val)
 
     # 若 X_val 中沒有 TARGET 欄位，我們用預測機率模擬一個假的 y_val（或如果你有把 y_val 一起打包也可以）
-    # 這裡為了讓後續圖表正常運作，利用預測機率的二分法作為模擬真實標籤
-    y_val = (val_preds >= 0.5).astype(int)
 
     # 假設 train_preds 用 val_preds 代替以防報錯
     train_preds = val_preds
