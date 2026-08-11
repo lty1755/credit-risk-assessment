@@ -131,6 +131,9 @@ def train_credit_risk_model():
     X_val_sample = X_val.head(100)
     joblib.dump(X_val_sample, 'models/X_val_sample.pkl')
 
+    y_val_sample = y_val.head(100)
+    joblib.dump(y_val_sample, 'models/y_val_sample.pkl')
+
     print("✅ 打包完成！'models/best_model.pkl' 與 'models/X_val_sample.pkl' 已建立。")
 
 
