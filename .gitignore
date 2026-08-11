@@ -10,9 +10,7 @@ data/
 *.zip
 
 # 模型與暫存檔 (建議重新訓練或用 Git LFS，若檔案小可不上傳)
-models/
-*.pkl
-*.joblib
+# 已經允許上傳 models 和 pkl 檔供雲端部署使用
 
 # Streamlit 設定
 .streamlit/

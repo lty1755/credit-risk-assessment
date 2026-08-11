@@ -1,5 +1,6 @@
 import sys
 import os
+import joblib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -120,8 +121,20 @@ def train_credit_risk_model():
     psi_score = calculate_psi(train_preds, val_preds)
     print(f"📊 【MLOps 監控】OOT 預測分佈 PSI: {psi_score:.4f} (小於 0.1 代表分佈穩定)")
 
-    return model, X_val, y_val
+    print("正在將模型與驗證集樣本打包儲存為 .pkl 檔...")
+    os.makedirs('models', exist_ok=True)
 
+    # 1. 儲存訓練好的 LightGBM 模型
+    joblib.dump(model, 'models/best_model.pkl')
+
+    # 2. 儲存一小張驗證集樣本（例如取前 100 筆給網頁互動使用，檔案才不會太大）
+    X_val_sample = X_val.head(100)
+    joblib.dump(X_val_sample, 'models/X_val_sample.pkl')
+
+    print("✅ 打包完成！'models/best_model.pkl' 與 'models/X_val_sample.pkl' 已建立。")
+
+
+    return model, X_val, y_val
 
 if __name__ == "__main__":
     train_credit_risk_model()
