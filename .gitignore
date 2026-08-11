@@ -1,0 +1,18 @@
+# Python 相關快取
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# 資料集 (Kaggle 大檔案不上傳)
+data/
+*.csv
+*.zip
+
+# 模型與暫存檔 (建議重新訓練或用 Git LFS，若檔案小可不上傳)
+models/
+*.pkl
+*.joblib
+
+# Streamlit 設定
+.streamlit/
