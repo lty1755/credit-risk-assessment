@@ -93,10 +93,18 @@
 
 ```
 credit-risk-scoring-project/
+├── assets/
+│   ├──ks_curve.png 
+│   ├──cost_curve.png 
+│   ├──shap_summary.png 
+│   └── shap_waterfall_example.png
+│
 ├── data/                          # 原始與處理後資料 (不納入版控)
 ├── notebooks/
 │   └── 01_eda.ipynb
 ├── src/
+│   ├──best_params.json           # Optuna 找到的最佳超參數
+│   ├── eda_01.py                  # 探索性分析過程 (缺失值/異常值發現與驗證)
 │   ├── utils.py                   # reduce_mem_usage 記憶體優化
 │   ├── features.py                # 特徵工程函式庫 (清理、比率、附表聚合)
 │   ├── build_features.py          # 完整特徵工程 pipeline (train/test 共用)
@@ -105,7 +113,6 @@ credit-risk-scoring-project/
 │   ├── train_final.py             # 最終模型 5-fold 訓練
 │   ├── risk_metrics.py            # KS / Gini / 成本矩陣 / 信用評分 / 風險分級
 │   └── shap_analysis.py           # SHAP 全局與個體解釋
-├── best_params.json               # Optuna 找到的最佳超參數
 ├── ks_curve.png / cost_curve.png / shap_summary.png / shap_waterfall_example.png
 ├── requirements.txt
 └── README.md
