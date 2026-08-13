@@ -12,6 +12,43 @@
 | **成本降低** | 39.4% | 相較「全部核准」，用成本矩陣找最佳決策切點後的加權成本降幅 |
 | **風險分層鑑別力** | 1.4% → 20.6% | 最低風險 vs 最高風險 Tier 的實際違約率，相差近 15 倍 |
 
+## 關鍵圖表
+
+<table>
+<tr>
+<td width="50%">
+
+**KS 曲線**（KS = 43.3，好壞客戶分離度最大處）
+
+![KS Curve](assets/ks_curve.png)
+
+</td>
+<td width="50%">
+
+**成本矩陣最佳決策切點**（相較全部核准，成本降低 39.4%）
+
+![Cost Curve](assets/cost_curve.png)
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**SHAP 全局特徵重要性**（Top 20）
+
+![SHAP Summary](assets/shap_summary.png)
+
+</td>
+<td width="50%">
+
+**SHAP 個體歸因範例**（拒貸理由拆解，預測違約機率 93.25%）
+
+![SHAP Waterfall](assets/shap_waterfall_example.png)
+
+</td>
+</tr>
+</table>
+
 ## 專案背景
 
 信用風控模型的核心任務,是在**核准貸款帶來的利息收入**與**違約造成的本金損失**之間找到最佳平衡點。這份專題模擬銀行實務流程,完整涵蓋:
@@ -30,9 +67,9 @@
 | `application_train/test.csv` | 客戶申請貸款當下的基本資料 | 307,511 / 48,744 |
 | `bureau.csv` | 客戶在其他銀行的信貸紀錄 | 1,716,428 |
 | `previous_application.csv` | 客戶過去在本公司的申貸歷史 | 1,670,214 |
-| `installments_payments.csv` | 分期還款明細 | — |
-| `POS_CASH_balance.csv` | 分期/現金貸款月結狀態 | — |
-| `credit_card_balance.csv` | 信用卡月結單 | — |
+| `installments_payments.csv` | 分期還款明細 | 13,605,401 |
+| `POS_CASH_balance.csv` | 分期/現金貸款月結狀態 | 10,001,358 |
+| `credit_card_balance.csv` | 信用卡月結單 | 3,840,312 |
 
 ## 方法流程
 
@@ -60,8 +97,6 @@ credit-risk-scoring-project/
 ├── notebooks/
 │   └── 01_eda.ipynb
 ├── src/
-│   ├── best_params.json           # Optuna 找到的最佳超參數
-│   ├── eda_01.py                  # 探索性分析過程 (缺失值/異常值發現與驗證)
 │   ├── utils.py                   # reduce_mem_usage 記憶體優化
 │   ├── features.py                # 特徵工程函式庫 (清理、比率、附表聚合)
 │   ├── build_features.py          # 完整特徵工程 pipeline (train/test 共用)
@@ -70,6 +105,7 @@ credit-risk-scoring-project/
 │   ├── train_final.py             # 最終模型 5-fold 訓練
 │   ├── risk_metrics.py            # KS / Gini / 成本矩陣 / 信用評分 / 風險分級
 │   └── shap_analysis.py           # SHAP 全局與個體解釋
+├── best_params.json               # Optuna 找到的最佳超參數
 ├── ks_curve.png / cost_curve.png / shap_summary.png / shap_waterfall_example.png
 ├── requirements.txt
 └── README.md
