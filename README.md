@@ -7,6 +7,7 @@
 | 指標 | 數值 | 說明 |
 |---|---|---|
 | **AUC (5-fold OOF)** | 0.7865 | LightGBM + Optuna 調參後 |
+| **Kaggle Public / Private Score** | 0.7870 / 0.7855 | 與 OOF AUC 幾乎完全吻合，驗證交叉驗證方法無過擬合、結果可信 |
 | **Gini 係數** | 0.573 | $2 \times AUC - 1$ |
 | **KS 統計量** | 43.3 | 業界標準「良好」等級 (40-60) |
 | **成本降低** | 39.4% | 相較「全部核准」，用成本矩陣找最佳決策切點後的加權成本降幅 |
@@ -98,12 +99,11 @@ credit-risk-scoring-project/
 │   ├──cost_curve.png 
 │   ├──shap_summary.png 
 │   └── shap_waterfall_example.png
-│
 ├── data/                          # 原始與處理後資料 (不納入版控)
 ├── notebooks/
 │   └── 01_eda.ipynb
 ├── src/
-│   ├──best_params.json           # Optuna 找到的最佳超參數
+│   ├── best_params.json               # Optuna 找到的最佳超參數 
 │   ├── eda_01.py                  # 探索性分析過程 (缺失值/異常值發現與驗證)
 │   ├── utils.py                   # reduce_mem_usage 記憶體優化
 │   ├── features.py                # 特徵工程函式庫 (清理、比率、附表聚合)
@@ -139,6 +139,8 @@ python src/shap_analysis.py       # 可解釋性分析
 ```
 
 ## 關鍵發現
+
+- **交叉驗證分數與 Kaggle 真實測試集分數高度一致**：5-fold OOF AUC 為 0.7865，Kaggle 官方 Public Score 0.7870、Private Score 0.7855，三者誤差在 0.001~0.0015 之間，證實本專案的 StratifiedKFold 驗證方法穩健可信，模型並未過擬合到自己切分的驗證集。
 
 - **特徵工程的邊際效益遠大於超參數調校**：LightGBM 使用預設參數即達到 AUC 0.784，Optuna 調參 40 次後僅再提升 0.0026，說明前期扎實的特徵工程（尤其是整併附表與 `EXT_SOURCE` 聚合）才是分數的主要來源。
 - **線性相關係數會低估非線性特徵的重要性**：`CREDIT_TERM` 與 `TARGET` 的 Pearson 相關係數僅 -0.032，但在 SHAP 分析中卻是第三重要的特徵，證實樹模型能捕捉相關係數看不到的交互作用。

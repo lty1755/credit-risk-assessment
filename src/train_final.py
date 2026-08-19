@@ -86,3 +86,28 @@ train[['SK_ID_CURR', 'TARGET']].assign(oof_pred=oof_preds_final).to_csv(
     os.path.join(DATA_DIR, 'oof_predictions.csv'), index=False
 )
 print('已存 OOF 預測結果，供後續風控指標分析使用')
+
+# %%
+# ---------- 對 Kaggle 測試集產出預測，用於 Public Leaderboard 提交 ----------
+test = pd.read_parquet(os.path.join(DATA_DIR, 'application_test_full.parquet'))
+print('test shape:', test.shape)
+
+X_test = test[feature_cols].copy()
+for col in CATEGORICAL_COLS:
+    X_test[col] = X_test[col].astype('category')
+
+# 用 5 個 fold 模型分別預測，取平均(bagging)，比單一模型的預測更穩健
+test_preds = np.zeros(len(X_test))
+for model in models_final:
+    test_preds += model.predict_proba(X_test)[:, 1] / len(models_final)
+
+submission = pd.DataFrame({
+    'SK_ID_CURR': test['SK_ID_CURR'],
+    'TARGET': test_preds,
+})
+submission_path = os.path.join(DATA_DIR, 'submission.csv')
+submission.to_csv(submission_path, index=False)
+print(f'submission.csv 已存至: {submission_path}')
+print(submission.head())
+print('\n預測機率分佈:')
+print(submission['TARGET'].describe())
